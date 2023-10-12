@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\DeviceRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DeviceRepository::class)]
@@ -19,9 +17,6 @@ class Device
     #[ORM\Column(length: 80)]
     private ?string $modelName = null;
 
-    #[ORM\Column]
-    private ?int $buildNumber = null;
-
     #[ORM\Column(length: 80)]
     private ?string $manufacturer = null;
 
@@ -34,10 +29,20 @@ class Device
     #[ORM\Column]
     private ?int $version = null;
 
+    #[ORM\Column]
+    private ?int $buildNumber = null;
+
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+
+    public function setId(?int $id): Device
+    {
+        $this->id = $id;
+        return $this;
     }
 
 
@@ -47,24 +52,9 @@ class Device
     }
 
 
-    public function setModelName(string $modelName): static
+    public function setModelName(?string $modelName): Device
     {
         $this->modelName = $modelName;
-
-        return $this;
-    }
-
-
-    public function getBuildNumber(): ?int
-    {
-        return $this->buildNumber;
-    }
-
-
-    public function setBuildNumber(int $buildNumber): static
-    {
-        $this->buildNumber = $buildNumber;
-
         return $this;
     }
 
@@ -75,10 +65,9 @@ class Device
     }
 
 
-    public function setManufacturer(string $manufacturer): static
+    public function setManufacturer(?string $manufacturer): Device
     {
         $this->manufacturer = $manufacturer;
-
         return $this;
     }
 
@@ -89,10 +78,9 @@ class Device
     }
 
 
-    public function setPlatform(string $platform): static
+    public function setPlatform(?string $platform): Device
     {
         $this->platform = $platform;
-
         return $this;
     }
 
@@ -103,10 +91,9 @@ class Device
     }
 
 
-    public function setSerialNumber(string $serialNumber): static
+    public function setSerialNumber(?string $serialNumber): Device
     {
         $this->serialNumber = $serialNumber;
-
         return $this;
     }
 
@@ -117,12 +104,25 @@ class Device
     }
 
 
-    public function setVersion(int $version): static
+    public function setVersion(?int $version): Device
     {
         $this->version = $version;
-
         return $this;
     }
+
+
+    public function getBuildNumber(): ?int
+    {
+        return $this->buildNumber;
+    }
+
+
+    public function setBuildNumber(?int $buildNumber): Device
+    {
+        $this->buildNumber = $buildNumber;
+        return $this;
+    }
+
 
 
 
