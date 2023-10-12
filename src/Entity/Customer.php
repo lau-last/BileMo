@@ -21,45 +21,45 @@ class Customer
     #[ORM\ManyToOne(inversedBy: 'customers')]
     private ?User $user = null;
 
-    #[Assert\NotBlank(message: 'The first name is require.')]
+    #[Assert\NotBlank(message: 'The first name is required.')]
     #[Assert\Length(min: 1, max: 80, minMessage: 'The first name must be at least {{ limit }} characters', maxMessage: 'The first name cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 80)]
     private ?string $firstname = null;
 
-    #[Assert\NotBlank(message: 'The last name is require.')]
+    #[Assert\NotBlank(message: 'The last name is required.')]
     #[Assert\Length(min: 1, max: 80, minMessage: 'The last name must be at least {{ limit }} characters', maxMessage: 'The last name cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 80)]
     private ?string $lastname = null;
 
-    #[Assert\NotBlank(message: 'The email is require.')]
+    #[Assert\NotBlank(message: 'The email is required.')]
     #[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    #[Assert\NotBlank(message: 'The gender is require.')]
+    #[Assert\NotBlank(message: 'The gender is required.')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 80)]
     private ?string $gender = null;
 
-    #[Assert\NotBlank(message: 'The date of birth is require.')]
+    #[Assert\NotBlank(message: 'The date of birth is required.')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $dateOfBirth = null;
 
-    #[Assert\NotBlank(message: 'The phone number is require.')]
+    #[Assert\NotBlank(message: 'The phone number is required.')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 20)]
     private ?string $phoneNumber = null;
 
-    #[Assert\NotBlank(message: 'The address is require.')]
+    #[Assert\NotBlank(message: 'The address is required.')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
-    #[Assert\NotBlank(message: 'The company is require.')]
+    #[Assert\NotBlank(message: 'The company is required.')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 50)]
     private ?string $company = null;
