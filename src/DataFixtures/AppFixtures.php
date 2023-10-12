@@ -26,19 +26,23 @@ class AppFixtures extends Fixture
         $faker = \Faker\Factory::create();
         $faker->addProvider(new \Bezhanov\Faker\Provider\Device($faker));
 
-        $user = new User();
-        $user
-            ->setEmail('user@bilemo.com')
-            ->setRoles(['ROLE_USER'])
-            ->setPassword($this->userPasswordHasher->hashPassword($user, 'password'));
-        $manager->persist($user);
-
         $admin = new User();
         $admin
+            ->setFirstname($faker->firstName())
+            ->setLastname($faker->lastName())
             ->setEmail('admin@bilemo.com')
             ->setRoles(['ROLE_ADMIN'])
             ->setPassword($this->userPasswordHasher->hashPassword($admin, 'password'));
         $manager->persist($admin);
+
+        $user = new User();
+        $user
+            ->setFirstname($faker->firstName())
+            ->setLastname($faker->lastName())
+            ->setEmail('user@bilemo.com')
+            ->setRoles(['ROLE_USER'])
+            ->setPassword($this->userPasswordHasher->hashPassword($user, 'password'));
+        $manager->persist($user);
 
         for ($i = 0; $i < 50; $i++) {
             $device = new Device();
@@ -54,17 +58,21 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < 50; $i++) {
             $gender = $faker->randomElement(['male', 'female']);
+            $firstname = $faker->firstName($gender);
+            $lastname = $faker->lastName();
+            $email = strtolower($firstname . '.' . $lastname . '@mail.com');
             $customer = new Customer();
             $customer
-                ->setEmail($faker->email())
-                ->setName($faker->name($gender))
+                ->setEmail($email)
+                ->setLastname($lastname)
                 ->setAddress($faker->address())
                 ->setGender($gender)
-                ->setFirstname($faker->firstName($gender))
+                ->setFirstname($firstname)
                 ->setPhoneNumber($faker->phoneNumber())
                 ->setCreatedAt($faker->dateTime())
                 ->setDateOfBirth($faker->dateTime())
-                ->setUser($faker->randomElement([$admin, $user]));
+                ->setUser($faker->randomElement([$admin, $user]))
+                ->setCompany($faker->company());
             $manager->persist($customer);
         }
 
