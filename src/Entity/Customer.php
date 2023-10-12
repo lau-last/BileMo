@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
@@ -14,69 +13,49 @@ class Customer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getCustomers'])]
+    #[Groups(["getCustomer"])]
     private ?int $id = null;
 
-    #[Groups(['getCustomers'])]
+    #[Groups(["getCustomers"])]
     #[ORM\ManyToOne(inversedBy: 'customers')]
     private ?User $user = null;
 
-    #[Assert\NotBlank(message: 'The first name is require.')]
-    #[Assert\Length(min: 1, max: 80, minMessage: 'The first name must be at least {{ limit }} characters', maxMessage: 'The first name cannot be more than {{ limit }} characters')]
-    #[Groups(['getCustomers'])]
+    #[Groups(["getCustomers"])]
     #[ORM\Column(length: 80)]
     private ?string $firstname = null;
 
-    #[Assert\NotBlank(message: 'The last name is require.')]
-    #[Assert\Length(min: 1, max: 80, minMessage: 'The last name must be at least {{ limit }} characters', maxMessage: 'The last name cannot be more than {{ limit }} characters')]
-    #[Groups(['getCustomers'])]
+    #[Groups(["getCustomers"])]
     #[ORM\Column(length: 80)]
     private ?string $lastname = null;
 
-    #[Assert\NotBlank(message: 'The email is require.')]
-    #[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
-    #[Groups(['getCustomers'])]
+
+    #[Groups(["getCustomers"])]
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    #[Assert\NotBlank(message: 'The gender is require.')]
-    #[Groups(['getCustomers'])]
+    #[Groups(["getCustomers"])]
     #[ORM\Column(length: 80)]
     private ?string $gender = null;
 
-    #[Assert\NotBlank(message: 'The date of birth is require.')]
-    #[Groups(['getCustomers'])]
+    #[Groups(["getCustomers"])]
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $dateOfBirth = null;
 
-    #[Assert\NotBlank(message: 'The phone number is require.')]
-    #[Groups(['getCustomers'])]
+    #[Groups(["getCustomers"])]
     #[ORM\Column(length: 20)]
     private ?string $phoneNumber = null;
 
-    #[Assert\NotBlank(message: 'The address is require.')]
-    #[Groups(['getCustomers'])]
+    #[Groups(["getCustomers"])]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
-    #[Assert\NotBlank(message: 'The company is require.')]
-    #[Groups(['getCustomers'])]
+    #[Groups(["getCustomers"])]
     #[ORM\Column(length: 50)]
     private ?string $company = null;
 
-    #[Groups(['getCustomers'])]
+    #[Groups(["getCustomers"])]
     #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $createdAt;
-
-    #[Groups(['getCustomers'])]
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
-
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-    }
+    private ?\DateTimeInterface $createdAt = null;
 
 
     public function getId(): ?int
@@ -218,19 +197,6 @@ class Customer
     public function setCreatedAt(?\DateTimeInterface $createdAt): Customer
     {
         $this->createdAt = $createdAt;
-        return $this;
-    }
-
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): Customer
-    {
-        $this->updatedAt = $updatedAt;
         return $this;
     }
 
