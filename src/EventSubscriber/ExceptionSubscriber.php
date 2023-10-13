@@ -34,11 +34,10 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 'message' => $exception->getMessage()
             ];
         }
-
         $event->setResponse(new JsonResponse($data));
-
-
     }
+
+}
 
 
 
