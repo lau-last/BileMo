@@ -17,7 +17,6 @@ class Customer
     #[Groups(['getCustomers'])]
     private ?int $id = null;
 
-    #[Groups(['getCustomers'])]
     #[ORM\ManyToOne(inversedBy: 'customers')]
     private ?User $user = null;
 
