@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use  Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 #[Route('/api/customers')]
 class CustomerController extends AbstractController
@@ -38,6 +38,7 @@ class CustomerController extends AbstractController
 
 
     #[Route('/{id}', name: 'deleteCustomers', methods: ['DELETE'])]
+    #[IsGranted('ROLE_ADMIN', message: 'You do not have sufficient rights to delete a customer')]
     public function deleteCustomer(Customer $customer, EntityManagerInterface $manager): JsonResponse
     {
         $manager->remove($customer);
@@ -47,6 +48,7 @@ class CustomerController extends AbstractController
 
 
     #[Route('', name: 'createCustomers', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN', message: 'You do not have sufficient rights to create a customer')]
     public function createCustomer(
         SerializerInterface    $serializer,
         Request                $request,
@@ -67,13 +69,18 @@ class CustomerController extends AbstractController
 
 
     #[Route('/{id}', name: 'updateCustomers', methods: ['PUT'])]
+    #[IsGranted('ROLE_ADMIN', message: 'You do not have sufficient rights to modify a customer')]
     public function updateCustomer(
         SerializerInterface    $serializer,
         Request                $request,
         EntityManagerInterface $manager,
-        Customer               $currentCustomer): JsonResponse
+        Customer               $currentCustomer,
+        ErrorValidate          $errorValidate): JsonResponse
     {
         $updateCustomer = $serializer->deserialize($request->getContent(), Customer::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $currentCustomer]);
+
+        $errorValidate->check($updateCustomer);
+
         $manager->persist($updateCustomer);
         $manager->flush();
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
