@@ -16,9 +16,19 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CustomerRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Customer::class);
+    }
+
+
+    public function findAllWithPagination($page, $limit)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        return $query->getQuery()->getResult();
     }
 
 //    /**
