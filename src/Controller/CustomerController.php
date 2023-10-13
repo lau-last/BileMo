@@ -6,6 +6,7 @@ use App\Entity\Customer;
 use App\Repository\CustomerRepository;
 use App\Service\ErrorValidate;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,16 +15,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
-use  Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 #[Route('/api/customers')]
 class CustomerController extends AbstractController
 {
 
     #[Route('', name: 'customers', methods: ['GET'])]
-    public function getCustomerList(CustomerRepository $customerRepository, SerializerInterface $serializer): JsonResponse
+    public function getCustomerList(CustomerRepository $customerRepository, SerializerInterface $serializer, Request $request): JsonResponse
     {
-        $customerList = $customerRepository->findAll();
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 3);
+        $customerList = $customerRepository->findAllWithPagination($page, $limit);
         $jsonCustomerList = $serializer->serialize($customerList, 'json', ['groups' => 'getCustomers']);
         return new JsonResponse($jsonCustomerList, Response::HTTP_OK, [], true);
     }
