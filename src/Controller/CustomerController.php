@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Customer;
 use App\Repository\CustomerRepository;
-use App\Repository\UserRepository;
+use App\Service\ErrorValidate;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/customers')]
 class CustomerController extends AbstractController
@@ -51,12 +52,12 @@ class CustomerController extends AbstractController
         Request                $request,
         EntityManagerInterface $manager,
         UrlGeneratorInterface  $urlGenerator,
-        UserRepository         $userRepository): JsonResponse
+        ErrorValidate          $errorValidate): JsonResponse
     {
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
-        $content = $request->toArray();
-        $idUser = $content['idUser'] ?? -1;
-        $customer->setUser($userRepository->find($idUser));
+
+        $errorValidate->check($customer);
+
         $manager->persist($customer);
         $manager->flush();
         $jsonCustomer = $serializer->serialize($customer, 'json', ['groups' => 'getCustomers']);
@@ -70,13 +71,9 @@ class CustomerController extends AbstractController
         SerializerInterface    $serializer,
         Request                $request,
         EntityManagerInterface $manager,
-        UserRepository         $userRepository,
         Customer               $currentCustomer): JsonResponse
     {
         $updateCustomer = $serializer->deserialize($request->getContent(), Customer::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $currentCustomer]);
-        $content = $request->toArray();
-        $idUser = $content['idUser'] ?? -1;
-        $currentCustomer->setUser($userRepository->find($idUser));
         $manager->persist($updateCustomer);
         $manager->flush();
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
