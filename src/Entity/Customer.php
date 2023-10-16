@@ -18,6 +18,7 @@ class Customer
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'customers')]
+    #[Groups(['getCustomers'])]
     private ?User $user = null;
 
     #[Assert\NotBlank(message: 'The first name is required.')]

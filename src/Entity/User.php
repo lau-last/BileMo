@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -16,12 +17,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['getCustomers'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 80)]
+    #[Groups(['getCustomers'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 80)]
+    #[Groups(['getCustomers'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 180, unique: true)]
