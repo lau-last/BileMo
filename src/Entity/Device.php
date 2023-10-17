@@ -4,7 +4,12 @@ namespace App\Entity;
 
 use App\Repository\DeviceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Hateoas\Configuration\Annotation as Hateoas;
 
+/**
+ * @Hateoas\Relation("self",
+ *      href = @Hateoas\Route("detailDevices", parameters = { "id" = "expr(object.getId())" }))
+ */
 #[ORM\Entity(repositoryClass: DeviceRepository::class)]
 class Device
 {
