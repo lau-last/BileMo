@@ -7,6 +7,8 @@ use App\Entity\User;
 use App\Repository\CustomerRepository;
 use App\Service\ErrorValidate;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
@@ -49,7 +50,8 @@ class CustomerController extends AbstractController
             return $customerRepository->findAllWithPagination($page, $limit, $userId);
         });
 
-        $jsonCustomerList = $serializer->serialize($customerList, 'json', ['groups' => 'getCustomers']);
+        $context = SerializationContext::create()->setGroups(['getCustomers']);
+        $jsonCustomerList = $serializer->serialize($customerList, 'json', $context);
         return new JsonResponse($jsonCustomerList, Response::HTTP_OK, [], true);
     }
 
@@ -57,7 +59,8 @@ class CustomerController extends AbstractController
     #[Route('/{id}', name: 'detailCustomers', methods: ['GET'])]
     public function getDetailCustomer(Customer $customer, SerializerInterface $serializer): JsonResponse
     {
-        $jsonDetailCustomer = $serializer->serialize($customer, 'json', ['groups' => 'getCustomers']);
+        $context = SerializationContext::create()->setGroups(['getCustomers']);
+        $jsonDetailCustomer = $serializer->serialize($customer, 'json', $context);
         return new JsonResponse($jsonDetailCustomer, Response::HTTP_OK, [], true);
     }
 
@@ -94,7 +97,8 @@ class CustomerController extends AbstractController
         $manager->persist($customer);
         $manager->flush();
         $cache->invalidateTags(['customersCache']);
-        $jsonCustomer = $serializer->serialize($customer, 'json', ['groups' => 'getCustomers']);
+        $context = SerializationContext::create()->setGroups(['getCustomers']);
+        $jsonCustomer = $serializer->serialize($customer, 'json', $context);
         $location = $urlGenerator->generate('detailCustomers', ['id' => $customer->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
         return new JsonResponse($jsonCustomer, Response::HTTP_CREATED, ['location' => $location], true);
     }
@@ -113,7 +117,20 @@ class CustomerController extends AbstractController
         ErrorValidate          $errorValidate,
         TagAwareCacheInterface $cache): JsonResponse
     {
-        $updateCustomer = $serializer->deserialize($request->getContent(), Customer::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $currentCustomer]);
+        /** @var Customer $updateCustomer */
+        $updateCustomer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
+
+        $currentCustomer
+            ->setFirstname($updateCustomer->getFirstname())
+            ->setLastname($updateCustomer->getLastname())
+            ->setEmail($updateCustomer->getEmail())
+            ->setGender($updateCustomer->getGender())
+            ->setDateOfBirth($updateCustomer->getDateOfBirth())
+            ->setPhoneNumber($updateCustomer->getPhoneNumber())
+            ->setAddress($updateCustomer->getAddress())
+            ->setCompany($updateCustomer->getCompany())
+            ->setUpdatedAt(new \DateTime());
+
         $errorValidate->check($updateCustomer);
         $manager->persist($updateCustomer);
         $manager->flush();
