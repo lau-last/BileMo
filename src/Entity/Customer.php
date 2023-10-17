@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\CustomerRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation\Since;
 
 
 /**
@@ -87,6 +89,11 @@ class Customer
     #[Groups(['getCustomers'])]
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
+
+    #[Groups(['getCustomers'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Since("2.0")]
+    private ?string $comment = null;
 
 
     public function __construct()
@@ -249,6 +256,20 @@ class Customer
         $this->updatedAt = $updatedAt;
         return $this;
     }
+
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+
+    public function setComment(?string $comment): Customer
+    {
+        $this->comment = $comment;
+        return $this;
+    }
+
 
 
 }
