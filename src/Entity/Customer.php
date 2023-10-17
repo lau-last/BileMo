@@ -4,9 +4,25 @@ namespace App\Entity;
 
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Hateoas\Configuration\Annotation as Hateoas;
 
+
+/**
+ * @Hateoas\Relation("self",
+ *      href = @Hateoas\Route("detailCustomers", parameters = { "id" = "expr(object.getId())" }),
+ *      exclusion = @Hateoas\Exclusion(groups="getCustomers")
+ * )
+ * @Hateoas\Relation("delete",
+ *       href = @Hateoas\Route("deleteCustomers",parameters = { "id" = "expr(object.getId())" }),
+ *       exclusion = @Hateoas\Exclusion(groups="getCustomers", excludeIf = "expr(not is_granted('ROLE_ADMIN'))"),
+ *  )
+ * @Hateoas\Relation("update",
+ *       href = @Hateoas\Route("updateCustomers",parameters = { "id" = "expr(object.getId())" }),
+ *       exclusion = @Hateoas\Exclusion(groups="getCustomers", excludeIf = "expr(not is_granted('ROLE_ADMIN'))"),
+ *  )
+ */
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
 {
