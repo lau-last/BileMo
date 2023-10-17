@@ -71,7 +71,8 @@ class AppFixtures extends Fixture
                 ->setPhoneNumber($faker->phoneNumber())
                 ->setDateOfBirth($faker->dateTime())
                 ->setUser($faker->randomElement([$admin, $user]))
-                ->setCompany($faker->company());
+                ->setCompany($faker->company())
+                ->setComment($faker->text());
             $manager->persist($customer);
         }
 

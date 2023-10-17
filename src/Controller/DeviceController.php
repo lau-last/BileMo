@@ -10,6 +10,32 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Response(
+ *     response=200,
+ *     description="Retourne la liste des livres",
+ *     @OA\JsonContent(
+ *        type="array",
+ *        @OA\Items(ref=@Model(type=Device::class))
+ *     )
+ * )
+ * @OA\Parameter(
+ *     name="page",
+ *     in="query",
+ *     description="La page que l'on veut récupérer",
+ *     @OA\Schema(type="int")
+ * )
+ * @OA\Parameter(
+ *     name="limit",
+ *     in="query",
+ *     description="Le nombre d'éléments que l'on veut récupérer",
+ *     @OA\Schema(type="int")
+ * )
+ * @OA\Tag(name="Devices")
+ */
 
 #[Route('/api/devices')]
 class DeviceController extends AbstractController
