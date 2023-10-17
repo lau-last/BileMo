@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Device;
 use App\Repository\DeviceRepository;
-use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +16,7 @@ class DeviceController extends AbstractController
 {
 
     #[Route('', name: 'devices', methods: ['GET'])]
-    public function getDeviceList(DeviceRepository $deviceRepository, Serializer $serializer, Request $request): JsonResponse
+    public function getDeviceList(DeviceRepository $deviceRepository, SerializerInterface $serializer, Request $request): JsonResponse
     {
         $page = $request->get('page', 1);
         $limit = $request->get('limit', 3);
@@ -27,7 +27,7 @@ class DeviceController extends AbstractController
 
 
     #[Route('/{id}', name: 'detailDevices', methods: ['GET'])]
-    public function getDetailDevice(Device $device, Serializer $serializer): JsonResponse
+    public function getDetailDevice(Device $device, SerializerInterface $serializer): JsonResponse
     {
         $jsonDevice = $serializer->serialize($device, 'json');
         return new JsonResponse($jsonDevice, Response::HTTP_OK, ['accept' => 'json'], true);
