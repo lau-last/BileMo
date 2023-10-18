@@ -66,15 +66,13 @@ class CustomerController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $userId = $user->getId();
         $page = $request->get('page', 1);
         $limit = $request->get('limit', 3);
-        $idCache = 'getAllCustomers-' . $userId . '-' . $page . '-' . $limit;
+        $idCache = 'getAllCustomers-' . $user->getId() . '-' . $page . '-' . $limit;
 
-        $customerList = $cache->get($idCache, function (ItemInterface $item) use ($customerRepository, $page, $limit, $userId) {
-            echo('Not in the cache');
+        $customerList = $cache->get($idCache, function (ItemInterface $item) use ($customerRepository, $page, $limit, $user) {
             $item->tag('customersCache');
-            return $customerRepository->findAllWithPagination($page, $limit, $userId);
+            return $customerRepository->findAllWithPagination($page, $limit, $user);
         });
 
         $version = $versioningService->getVersion();

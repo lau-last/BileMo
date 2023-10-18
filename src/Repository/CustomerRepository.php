@@ -3,9 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Customer;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,12 +24,12 @@ class CustomerRepository extends ServiceEntityRepository
     }
 
 
-    public function findAllWithPagination($page, $limit, $userId)
+    public function findAllWithPagination(int $page, int $limit, User $user)
     {
         $query = $this->createQueryBuilder('c')
             ->leftJoin('c.user', 'u')
             ->where('u.id = :userId')
-            ->setParameter('userId', $userId)
+            ->setParameter('userId', $user->getId())
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit);
         return $query->getQuery()->getResult();
