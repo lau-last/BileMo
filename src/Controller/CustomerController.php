@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -86,6 +87,11 @@ class CustomerController extends AbstractController
     #[Route('/{id}', name: 'detailCustomers', methods: ['GET'])]
     public function getDetailCustomer(Customer $customer, SerializerInterface $serializer, VersioningService $versioningService): JsonResponse
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        if ($customer->getUser()->getId() !== $user->getId()){
+            Throw new HttpException(403, 'You dont have a User with this ID');
+        }
         $version = $versioningService->getVersion();
         $context = SerializationContext::create()->setGroups(['getCustomers'])->setVersion($version);
         $jsonDetailCustomer = $serializer->serialize($customer, 'json', $context);
@@ -100,6 +106,11 @@ class CustomerController extends AbstractController
     #[IsGranted('ROLE_ADMIN', message: 'You do not have sufficient rights to delete a customer')]
     public function deleteCustomer(Customer $customer, EntityManagerInterface $manager, TagAwareCacheInterface $cache): JsonResponse
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        if ($customer->getUser()->getId() !== $user->getId()){
+            Throw new HttpException(403, 'You dont have a User with this ID');
+        }
         $manager->remove($customer);
         $manager->flush();
         $cache->invalidateTags(['customersCache']);
@@ -121,7 +132,9 @@ class CustomerController extends AbstractController
         TagAwareCacheInterface $cache,
         VersioningService      $versioningService): JsonResponse
     {
+        /** @var Customer $customer */
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
+        $customer->setUser($this->getUser());
         $errorValidate->check($customer);
         $manager->persist($customer);
         $manager->flush();
@@ -147,6 +160,12 @@ class CustomerController extends AbstractController
         ErrorValidate          $errorValidate,
         TagAwareCacheInterface $cache): JsonResponse
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        if ($currentCustomer->getUser()->getId() !== $user->getId()){
+            Throw new HttpException(403, 'You dont have a User with this ID');
+        }
+
         /** @var Customer $updateCustomer */
         $updateCustomer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
 
