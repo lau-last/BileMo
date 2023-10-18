@@ -21,7 +21,7 @@ class DeviceRepository extends ServiceEntityRepository
         parent::__construct($registry, Device::class);
     }
 
-    public function findAllWithPagination($page, $limit)
+    public function findAllWithPagination(int $page, int $limit)
     {
         $query = $this->createQueryBuilder('d')
             ->setFirstResult(($page - 1) * $limit)
