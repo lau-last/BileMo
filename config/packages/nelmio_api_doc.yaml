@@ -1,5 +1,8 @@
 nelmio_api_doc:
     documentation:
+        servers:
+            - url: https://127.0.0.1:8000
+              description: API BileMo
         info:
             title: My App
             description: This is an awesome app!

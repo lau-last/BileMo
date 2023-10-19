@@ -27,7 +27,7 @@ use OpenApi\Annotations as OA;
 /**
  * @OA\Response(
  *     response=200,
- *     description="Retourne la liste des livres",
+ *     description="Retourne la liste d",
  *     @OA\JsonContent(
  *        type="array",
  *        @OA\Items(ref=@Model(type=Customer::class, groups={"getCustomers"}))
