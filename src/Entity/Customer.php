@@ -25,6 +25,7 @@ use JMS\Serializer\Annotation\Since;
  *       exclusion = @Hateoas\Exclusion(groups="getCustomers", excludeIf = "expr(not is_granted('ROLE_ADMIN'))"),
  *  )
  */
+
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
 {
