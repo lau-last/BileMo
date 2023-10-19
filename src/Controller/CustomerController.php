@@ -87,9 +87,11 @@ class CustomerController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
         if ($customer->getUser()->getId() !== $user->getId()){
             Throw new HttpException(403, 'You dont have a User with this ID');
         }
+
         $version = $versioningService->getVersion();
         $context = SerializationContext::create()->setGroups(['getCustomers'])->setVersion($version);
         $jsonDetailCustomer = $serializer->serialize($customer, 'json', $context);
@@ -106,9 +108,11 @@ class CustomerController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
         if ($customer->getUser()->getId() !== $user->getId()){
             Throw new HttpException(403, 'You dont have a User with this ID');
         }
+
         $manager->remove($customer);
         $manager->flush();
         $cache->invalidateTags(['customersCache']);
@@ -160,6 +164,7 @@ class CustomerController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
         if ($currentCustomer->getUser()->getId() !== $user->getId()){
             Throw new HttpException(403, 'You dont have a User with this ID');
         }
