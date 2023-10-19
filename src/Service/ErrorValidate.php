@@ -19,9 +19,9 @@ class ErrorValidate
 
     public function check($object): void
     {
-        $errors = $this->validator->validate($object);
-        if ($errors->count() > 0) {
-            throw new BadRequestHttpException($errors[0]->getMessage());
+        $message = $this->validator->validate($object);
+        if ($message->count() > 0) {
+            throw new BadRequestHttpException($message[0]->getMessage());
         }
     }
 
