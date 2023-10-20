@@ -9,7 +9,8 @@
 /vendor/
 ###< symfony/framework-bundle ###
 /.idea/
-
+/tools/
+/.php-cs-fixer.cache
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###

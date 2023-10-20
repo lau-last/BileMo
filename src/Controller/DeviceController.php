@@ -14,11 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Attributes as OA;
 
-
 #[Route('/api/devices')]
 class DeviceController extends AbstractController
 {
-
     /**
      * Returns device information.
      */

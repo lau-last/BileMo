@@ -10,7 +10,7 @@ class VersioningService
     private RequestStack $requestStack;
 
     private string $defaultVersion;
-    
+
     /**
      * @param RequestStack $requestStack
      * @param ParameterBagInterface $params

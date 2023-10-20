@@ -10,7 +10,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
-
     public static function getSubscribedEvents(): array
     {
         return [
@@ -38,6 +37,3 @@ class ExceptionSubscriber implements EventSubscriberInterface
     }
 
 }
-
-
-

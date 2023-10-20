@@ -11,7 +11,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation\Since;
 use OpenApi\Attributes as OA;
 
-
 /**
  * @Hateoas\Relation("self",
  *      href = @Hateoas\Route("detailCustomers", parameters = { "id" = "expr(object.getId())" }),
@@ -30,7 +29,6 @@ use OpenApi\Attributes as OA;
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
 {
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

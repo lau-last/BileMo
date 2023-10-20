@@ -7,7 +7,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ErrorValidate
 {
-
     private ValidatorInterface $validator;
 
 

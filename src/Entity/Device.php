@@ -14,7 +14,6 @@ use OpenApi\Attributes as OA;
 #[ORM\Entity(repositoryClass: DeviceRepository::class)]
 class Device
 {
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

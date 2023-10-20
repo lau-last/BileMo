@@ -24,11 +24,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
-
 #[Route('/api/customers')]
 class CustomerController extends AbstractController
 {
-
     /**
      * List information related to your users.
      *
@@ -44,8 +42,8 @@ class CustomerController extends AbstractController
         SerializerInterface    $serializer,
         Request                $request,
         TagAwareCacheInterface $cache,
-        VersioningService      $versioningService): JsonResponse
-    {
+        VersioningService      $versioningService
+    ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
         $page = $request->get('page', 1);
@@ -127,8 +125,8 @@ class CustomerController extends AbstractController
         UrlGeneratorInterface  $urlGenerator,
         ErrorValidate          $errorValidate,
         TagAwareCacheInterface $cache,
-        VersioningService      $versioningService): JsonResponse
-    {
+        VersioningService      $versioningService
+    ): JsonResponse {
         /** @var Customer $customer */
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
         $customer->setUser($this->getUser());
@@ -159,8 +157,8 @@ class CustomerController extends AbstractController
         EntityManagerInterface $manager,
         Customer               $currentCustomer,
         ErrorValidate          $errorValidate,
-        TagAwareCacheInterface $cache): JsonResponse
-    {
+        TagAwareCacheInterface $cache
+    ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
 
