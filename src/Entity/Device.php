@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\DeviceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
+use OpenApi\Attributes as OA;
 
 /**
  * @Hateoas\Relation("self",
@@ -17,24 +18,31 @@ class Device
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[OA\Property(description: 'The unique identifier of the device.')]
     private ?int $id = null;
 
     #[ORM\Column(length: 80)]
+    #[OA\Property(description: 'The model name of the device (e.g. iPhone 3GS).', maxLength: 80)]
     private ?string $modelName = null;
 
     #[ORM\Column(length: 80)]
+    #[OA\Property(description: 'The manufacturer of the device (e.g. Apple).', maxLength: 80)]
     private ?string $manufacturer = null;
 
     #[ORM\Column(length: 80)]
+    #[OA\Property(description: 'The platform of the device (e.g. iOS 17).', maxLength: 80)]
     private ?string $platform = null;
 
     #[ORM\Column(length: 50)]
+    #[OA\Property(description: 'The serial number of the device (e.g. SJMZOmtU0csrv4R).', maxLength: 50)]
     private ?string $serialNumber = null;
 
     #[ORM\Column]
+    #[OA\Property(description: 'The version of the user (e.g. 001).')]
     private ?int $version = null;
 
     #[ORM\Column]
+    #[OA\Property(description: 'The build number of the user (e.g. 123).')]
     private ?int $buildNumber = null;
 
 
@@ -127,8 +135,6 @@ class Device
         $this->buildNumber = $buildNumber;
         return $this;
     }
-
-
 
 
 }

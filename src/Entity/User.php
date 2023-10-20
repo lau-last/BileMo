@@ -17,15 +17,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getCustomers'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 80)]
-    #[Groups(['getCustomers'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 80)]
-    #[Groups(['getCustomers'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 180, unique: true)]

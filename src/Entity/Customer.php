@@ -9,6 +9,7 @@ use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation\Since;
+use OpenApi\Attributes as OA;
 
 
 /**
@@ -34,66 +35,82 @@ class Customer
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['getCustomers'])]
+    #[OA\Property(description: 'The unique identifier of the customer.')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'customers')]
-    #[Groups(['getCustomers'])]
     private ?User $user = null;
 
     #[Assert\NotBlank(message: 'The first name is required.')]
     #[Assert\Length(min: 1, max: 80, minMessage: 'The first name must be at least {{ limit }} characters', maxMessage: 'The first name cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 80)]
+    #[OA\Property(description: 'The unique fist name of the customer.')]
     private ?string $firstname = null;
 
     #[Assert\NotBlank(message: 'The last name is required.')]
     #[Assert\Length(min: 1, max: 80, minMessage: 'The last name must be at least {{ limit }} characters', maxMessage: 'The last name cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 80)]
+    #[OA\Property(description: 'The last name of the customer.')]
     private ?string $lastname = null;
 
     #[Assert\NotBlank(message: 'The email is required.')]
+    #[Assert\Length(min: 1, max: 180, minMessage: 'The email must be at least {{ limit }} characters', maxMessage: 'The email cannot be more than {{ limit }} characters')]
     #[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 180)]
+    #[OA\Property(description: 'The email of the customer.')]
     private ?string $email = null;
 
     #[Assert\NotBlank(message: 'The gender is required.')]
+    #[Assert\Length(min: 1, max: 80, minMessage: 'The gender must be at least {{ limit }} characters', maxMessage: 'The gender cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 80)]
+    #[OA\Property(description: 'The gender of the customer.')]
     private ?string $gender = null;
 
     #[Assert\NotBlank(message: 'The date of birth is required.')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(type: 'datetime')]
+    #[OA\Property(description: 'The date of birth of the customer. (e.g. 2002-02-02)')]
     private ?\DateTimeInterface $dateOfBirth = null;
 
     #[Assert\NotBlank(message: 'The phone number is required.')]
+    #[Assert\Length(min: 1, max: 20, minMessage: 'The phone number must be at least {{ limit }} characters', maxMessage: 'The phone number cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 20)]
+    #[OA\Property(description: 'The phone number of the customer.')]
     private ?string $phoneNumber = null;
 
     #[Assert\NotBlank(message: 'The address is required.')]
+    #[Assert\Length(min: 1, max: 255, minMessage: 'The address must be at least {{ limit }} characters', maxMessage: 'The address cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 255)]
+    #[OA\Property(description: 'The address of the customer.')]
     private ?string $address = null;
 
     #[Assert\NotBlank(message: 'The company is required.')]
+    #[Assert\Length(min: 1, max: 50, minMessage: 'The company must be at least {{ limit }} characters', maxMessage: 'The company cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
     #[ORM\Column(length: 50)]
+    #[OA\Property(description: 'The company of the customer.')]
     private ?string $company = null;
 
     #[Groups(['getCustomers'])]
     #[ORM\Column(type: 'datetime')]
+    #[OA\Property(description: 'The date of creation of the customer. No need to specify because it\'s automatic')]
     private ?\DateTimeInterface $createdAt;
 
     #[Groups(['getCustomers'])]
     #[ORM\Column(type: 'datetime', nullable: true)]
+    #[OA\Property(description: 'The date of the modification of the customer. No need to specify because it\'s automatic')]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[Groups(['getCustomers'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Since("2.0")]
+    #[OA\Property(description: 'The comment of the customer. Since version 2.0')]
     private ?string $comment = null;
 
 

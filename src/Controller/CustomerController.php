@@ -10,6 +10,8 @@ use App\Service\VersioningService;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Attributes as OA;
 use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,42 +23,22 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use OpenApi\Annotations as OA;
 
-/**
- * @OA\Response(
- *     response=200,
- *     description="Retourne la liste d",
- *     @OA\JsonContent(
- *        type="array",
- *        @OA\Items(ref=@Model(type=Customer::class, groups={"getCustomers"}))
- *     )
- * )
- * @OA\Parameter(
- *     name="page",
- *     in="query",
- *     description="La page que l'on veut récupérer",
- *     @OA\Schema(type="int")
- * )
- * @OA\Parameter(
- *     name="limit",
- *     in="query",
- *     description="Le nombre d'éléments que l'on veut récupérer",
- *     @OA\Schema(type="int")
- * )
- * @OA\Tag(name="Customers")
- */
 
 #[Route('/api/customers')]
 class CustomerController extends AbstractController
 {
 
-
     /**
+     * List information related to your users.
+     *
      * @throws InvalidArgumentException
      */
     #[Route('', name: 'customers', methods: ['GET'])]
+    #[OA\Response(response: 200, description: 'Successful response', content: new OA\JsonContent(type: 'array', items: new OA\Items(ref: new Model(type: Customer::class, groups: ['getCustomers']))))]
+    #[OA\Parameter(name: 'page', description: 'The page of the result', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 1))]
+    #[OA\Parameter(name: 'limit', description: 'Number of elements per page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 3))]
+    #[OA\Tag(name: 'Customers')]
     public function getCustomerList(
         CustomerRepository     $customerRepository,
         SerializerInterface    $serializer,
@@ -82,14 +64,19 @@ class CustomerController extends AbstractController
     }
 
 
+    /**
+     * List information related to one user specific.
+     */
     #[Route('/{id}', name: 'detailCustomers', methods: ['GET'])]
+    #[OA\Response(response: 200, description: 'Successful response', content: new OA\JsonContent(type: 'array', items: new OA\Items(ref: new Model(type: Customer::class, groups: ['getCustomers']))))]
+    #[OA\Tag(name: 'Customers')]
     public function getDetailCustomer(Customer $customer, SerializerInterface $serializer, VersioningService $versioningService): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        if ($customer->getUser()->getId() !== $user->getId()){
-            Throw new HttpException(403, 'You dont have a User with this ID');
+        if ($customer->getUser()->getId() !== $user->getId()) {
+            throw new HttpException(403, 'You dont have a User with this ID');
         }
 
         $version = $versioningService->getVersion();
@@ -100,17 +87,21 @@ class CustomerController extends AbstractController
 
 
     /**
+     * Delete one user specific.
+     *
      * @throws InvalidArgumentException
      */
     #[Route('/{id}', name: 'deleteCustomers', methods: ['DELETE'])]
     #[IsGranted('ROLE_ADMIN', message: 'You do not have sufficient rights to delete a customer')]
+    #[OA\Response(response: 204, description: 'Your customer has been deleted')]
+    #[OA\Tag(name: 'Customers')]
     public function deleteCustomer(Customer $customer, EntityManagerInterface $manager, TagAwareCacheInterface $cache): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        if ($customer->getUser()->getId() !== $user->getId()){
-            Throw new HttpException(403, 'You dont have a User with this ID');
+        if ($customer->getUser()->getId() !== $user->getId()) {
+            throw new HttpException(403, 'You dont have a User with this ID');
         }
 
         $manager->remove($customer);
@@ -121,10 +112,14 @@ class CustomerController extends AbstractController
 
 
     /**
+     * Create one user.
+     *
      * @throws InvalidArgumentException
      */
     #[Route('', name: 'createCustomers', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN', message: 'You do not have sufficient rights to create a customer')]
+    #[OA\Response(response: 201, description: 'Your customer has been created', content: new OA\JsonContent(type: 'array', items: new OA\Items(ref: new Model(type: Customer::class, groups: ['getCustomers']))))]
+    #[OA\Tag(name: 'Customers')]
     public function createCustomer(
         SerializerInterface    $serializer,
         Request                $request,
@@ -150,10 +145,14 @@ class CustomerController extends AbstractController
 
 
     /**
+     * Update one user specific.
+     *
      * @throws InvalidArgumentException
      */
     #[Route('/{id}', name: 'updateCustomers', methods: ['PUT'])]
     #[IsGranted('ROLE_ADMIN', message: 'You do not have sufficient rights to modify a customer')]
+    #[OA\Response(response: 204, description: 'Your customer has been updated')]
+    #[OA\Tag(name: 'Customers')]
     public function updateCustomer(
         SerializerInterface    $serializer,
         Request                $request,
@@ -165,8 +164,8 @@ class CustomerController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if ($currentCustomer->getUser()->getId() !== $user->getId()){
-            Throw new HttpException(403, 'You dont have a User with this ID');
+        if ($currentCustomer->getUser()->getId() !== $user->getId()) {
+            throw new HttpException(403, 'You dont have a User with this ID');
         }
 
         /** @var Customer $updateCustomer */

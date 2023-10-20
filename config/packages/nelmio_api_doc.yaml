@@ -1,11 +1,11 @@
 nelmio_api_doc:
     documentation:
         servers:
-            - url: https://127.0.0.1:8000
+            - url: http://192.168.33.10:8000
               description: API BileMo
         info:
-            title: My App
-            description: This is an awesome app!
+            title: BileMo
+            description: API service
             version: 1.0.0
         paths:
             /api/login_check:
@@ -13,16 +13,16 @@ nelmio_api_doc:
                     operationId: postCredentialsItem
                     tags:
                         - Token
-                    summary: Permet d'obtenir le token JWT pour se logger.
+                    summary: Allows you to obtain the JWT token to log in.
                     requestBody:
-                        description: Crée un nouveau token JWT
+                        description: Create a new JWT token
                         content:
                             application/json:
                                 schema:
                                     $ref: '#/components/schemas/Credentials'
                     responses:
                         '200':
-                            description: Récupère le token JWT
+                            description: Get the JWT token
                             content:
                                 application/json:
                                     schema:
