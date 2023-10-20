@@ -9,9 +9,8 @@ class VersioningService
 {
     private RequestStack $requestStack;
 
-    private string|int|bool|array|null|float|\UnitEnum $defaultVersion;
-
-
+    private string $defaultVersion;
+    
     /**
      * @param RequestStack $requestStack
      * @param ParameterBagInterface $params
