@@ -12,7 +12,7 @@ To install the project on your machine, follow these steps:
 > composer install
 ### 3) Update the environment variables in the **.env** file
 Modify the database connection string:
->DATABASE_URL="mysql://**db_user**:**db_password**@127.0.0.1:3306/**db_name**?serverVersion=5.7&charset=utf8mb4"
+>DATABASE_URL="mysql://**db_user**:**db_password**@127.0.0.1:3306/**db_name**?charset=utf8mb4"
 
 Add
 >JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
