@@ -110,6 +110,7 @@ class Customer
     #[Since("2.0")]
     #[OA\Property(description: 'The comment of the customer. Since version 2.0')]
     private ?string $comment = null;
+    //Accept -> application/json; version=1.0
 
 
     public function __construct()

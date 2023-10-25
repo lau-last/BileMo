@@ -107,7 +107,7 @@ class DeviceController extends AbstractController
 
         $errorValidate->check($device);
         $errorValidate->checkVersionAndBuildNumber($device);
-        
+
         $manager->persist($device);
         $manager->flush();
         $cache->invalidateTags(['devicesCache']);
