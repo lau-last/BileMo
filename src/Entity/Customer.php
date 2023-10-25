@@ -97,12 +97,12 @@ class Customer
 
     #[Groups(['getCustomers'])]
     #[ORM\Column(type: 'datetime')]
-    #[OA\Property(description: 'The date of creation of the customer. No need to specify because it\'s automatic')]
-    private ?\DateTimeInterface $createdAt;
+    #[OA\Property(description: 'The date of creation of the customer. No need to specify when you create because it\'s automatic')]
+    private ?\DateTimeInterface $createdAt = null;
 
     #[Groups(['getCustomers'])]
     #[ORM\Column(type: 'datetime', nullable: true)]
-    #[OA\Property(description: 'The date of the modification of the customer. No need to specify because it\'s automatic')]
+    #[OA\Property(description: 'The date of the modification of the customer. No need to specify when you update because it\'s automatic')]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[Groups(['getCustomers'])]
@@ -111,12 +111,6 @@ class Customer
     #[OA\Property(description: 'The comment of the customer. Since version 2.0')]
     private ?string $comment = null;
     //Accept -> application/json; version=1.0
-
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-    }
 
 
     public function getId(): ?int

@@ -68,17 +68,11 @@ class Device
 
     #[ORM\Column(type: 'datetime')]
     #[OA\Property(description: 'The date of creation of the device. No need to specify when you create because it\'s automatic')]
-    private ?\DateTimeInterface $createdAt;
+    private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     #[OA\Property(description: 'The date of the modification of the device. No need to specify when you update because it\'s automatic')]
     private ?\DateTimeInterface $updatedAt = null;
-
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-    }
 
 
     public function getId(): ?int
