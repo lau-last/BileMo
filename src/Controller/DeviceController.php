@@ -26,7 +26,6 @@ class DeviceController extends AbstractController
 
     /**
      * Returns device information.
-     *
      * @throws InvalidArgumentException
      */
     #[Route('', name: 'devices', methods: ['GET'])]
@@ -69,7 +68,6 @@ class DeviceController extends AbstractController
 
     /**
      * Delete one device specific.
-     *
      * @throws InvalidArgumentException
      */
     #[Route('/{id}', name: 'deleteDevices', methods: ['DELETE'])]
@@ -87,7 +85,6 @@ class DeviceController extends AbstractController
 
     /**
      * Create one device.
-     *
      * @throws InvalidArgumentException
      */
     #[Route('', name: 'createDevices', methods: ['POST'])]
@@ -104,6 +101,7 @@ class DeviceController extends AbstractController
     {
         /** @var Device $device */
         $device = $serializer->deserialize($request->getContent(), Device::class, 'json');
+        $device->setCreatedAt(new \DateTime());
         $errorValidate->check($device);
         $manager->persist($device);
         $manager->flush();
@@ -116,7 +114,6 @@ class DeviceController extends AbstractController
 
     /**
      * Update one device specific.
-     *
      * @throws InvalidArgumentException
      */
     #[Route('/{id}', name: 'updateDevices', methods: ['PUT'])]
@@ -133,6 +130,7 @@ class DeviceController extends AbstractController
     {
         /** @var Device $updateDevice */
         $updateDevice = $serializer->deserialize($request->getContent(), Device::class, 'json');
+        $errorValidate->check($updateDevice);
 
         $currentDevice
             ->setModelName($updateDevice->getModelName())
@@ -141,14 +139,15 @@ class DeviceController extends AbstractController
             ->setSerialNumber($updateDevice->getSerialNumber())
             ->setVersion($updateDevice->getVersion())
             ->setBuildNumber($updateDevice->getBuildNumber())
+            ->setCreatedAt($updateDevice->getCreatedAt())
             ->setUpdatedAt(new \DateTime());
 
-        $errorValidate->check($updateDevice);
         $manager->persist($updateDevice);
         $manager->flush();
         $cache->invalidateTags(['devicesCache']);
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+
 
 
 }

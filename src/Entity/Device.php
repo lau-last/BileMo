@@ -7,7 +7,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use OpenApi\Attributes as OA;
-use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -60,7 +59,7 @@ class Device
 
     #[Assert\NotBlank(message: 'The version is required.')]
     #[ORM\Column(type: Types::INTEGER)]
-    #[OA\Property(description: 'The version of the user (e.g. 001).')]
+    #[OA\Property(description: 'The version of the user (e.g. 451).')]
     private ?int $version = null;
 
     #[Assert\NotBlank(message: 'The build number number is required.')]

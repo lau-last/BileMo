@@ -27,10 +27,9 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
 #[Route('/api/customers')]
 class CustomerController extends AbstractController
 {
-    
+
     /**
      * List information related to your users.
-     *
      * @throws InvalidArgumentException
      */
     #[Route('', name: 'customers', methods: ['GET'])]
@@ -87,7 +86,6 @@ class CustomerController extends AbstractController
 
     /**
      * Delete one user specific.
-     *
      * @throws InvalidArgumentException
      */
     #[Route('/{id}', name: 'deleteCustomers', methods: ['DELETE'])]
@@ -112,7 +110,6 @@ class CustomerController extends AbstractController
 
     /**
      * Create one user.
-     *
      * @throws InvalidArgumentException
      */
     #[Route('', name: 'createCustomers', methods: ['POST'])]
@@ -131,6 +128,7 @@ class CustomerController extends AbstractController
         /** @var Customer $customer */
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
         $customer->setUser($this->getUser());
+        $customer->setCreatedAt(new \DateTime());
         $errorValidate->check($customer);
         $manager->persist($customer);
         $manager->flush();
@@ -145,7 +143,6 @@ class CustomerController extends AbstractController
 
     /**
      * Update one user specific.
-     *
      * @throws InvalidArgumentException
      */
     #[Route('/{id}', name: 'updateCustomers', methods: ['PUT'])]
@@ -169,6 +166,7 @@ class CustomerController extends AbstractController
 
         /** @var Customer $updateCustomer */
         $updateCustomer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
+        $errorValidate->check($updateCustomer);
 
         $currentCustomer
             ->setFirstname($updateCustomer->getFirstname())
@@ -180,9 +178,9 @@ class CustomerController extends AbstractController
             ->setAddress($updateCustomer->getAddress())
             ->setCompany($updateCustomer->getCompany())
             ->setComment($updateCustomer->getComment())
+            ->setCreatedAt($updateCustomer->getCreatedAt())
             ->setUpdatedAt(new \DateTime());
 
-        $errorValidate->check($updateCustomer);
         $manager->persist($updateCustomer);
         $manager->flush();
         $cache->invalidateTags(['customersCache']);
