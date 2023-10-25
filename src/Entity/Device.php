@@ -22,7 +22,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *       exclusion = @Hateoas\Exclusion(excludeIf = "expr(not is_granted('ROLE_ADMIN'))"),
  *  )
  */
-
 #[ORM\Entity(repositoryClass: DeviceRepository::class)]
 class Device
 {
@@ -68,11 +67,11 @@ class Device
     private ?int $buildNumber = null;
 
     #[ORM\Column(type: 'datetime')]
-    #[OA\Property(description: 'The date of creation of the device. No need to specify because it\'s automatic')]
+    #[OA\Property(description: 'The date of creation of the device. No need to specify when you create because it\'s automatic')]
     private ?\DateTimeInterface $createdAt;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
-    #[OA\Property(description: 'The date of the modification of the device. No need to specify because it\'s automatic')]
+    #[OA\Property(description: 'The date of the modification of the device. No need to specify when you update because it\'s automatic')]
     private ?\DateTimeInterface $updatedAt = null;
 
 

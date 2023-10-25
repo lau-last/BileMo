@@ -168,6 +168,7 @@ class CustomerController extends AbstractController
         $updateCustomer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
         $errorValidate->check($updateCustomer);
 
+
         $currentCustomer
             ->setFirstname($updateCustomer->getFirstname())
             ->setLastname($updateCustomer->getLastname())

@@ -9,12 +9,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Attributes as OA;
+use phpDocumentor\Reflection\Types\Integer;
 use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -102,7 +104,10 @@ class DeviceController extends AbstractController
         /** @var Device $device */
         $device = $serializer->deserialize($request->getContent(), Device::class, 'json');
         $device->setCreatedAt(new \DateTime());
+
         $errorValidate->check($device);
+        $errorValidate->checkVersionAndBuildNumber($device);
+        
         $manager->persist($device);
         $manager->flush();
         $cache->invalidateTags(['devicesCache']);
@@ -130,7 +135,9 @@ class DeviceController extends AbstractController
     {
         /** @var Device $updateDevice */
         $updateDevice = $serializer->deserialize($request->getContent(), Device::class, 'json');
+
         $errorValidate->check($updateDevice);
+        $errorValidate->checkVersionAndBuildNumber($updateDevice);
 
         $currentDevice
             ->setModelName($updateDevice->getModelName())
