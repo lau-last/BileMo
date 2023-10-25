@@ -42,14 +42,14 @@ class Customer
     #[Assert\NotBlank(message: 'The first name is required.')]
     #[Assert\Length(min: 1, max: 80, minMessage: 'The first name must be at least {{ limit }} characters', maxMessage: 'The first name cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
-    #[ORM\Column(length: 80)]
+    #[ORM\Column(type: Types::STRING, length: 80)]
     #[OA\Property(description: 'The unique fist name of the customer.')]
     private ?string $firstname = null;
 
     #[Assert\NotBlank(message: 'The last name is required.')]
     #[Assert\Length(min: 1, max: 80, minMessage: 'The last name must be at least {{ limit }} characters', maxMessage: 'The last name cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
-    #[ORM\Column(length: 80)]
+    #[ORM\Column(type: Types::STRING, length: 80)]
     #[OA\Property(description: 'The last name of the customer.')]
     private ?string $lastname = null;
 
@@ -57,14 +57,14 @@ class Customer
     #[Assert\Length(min: 1, max: 180, minMessage: 'The email must be at least {{ limit }} characters', maxMessage: 'The email cannot be more than {{ limit }} characters')]
     #[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
     #[Groups(['getCustomers'])]
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(type: Types::STRING, length: 180)]
     #[OA\Property(description: 'The email of the customer.')]
     private ?string $email = null;
 
     #[Assert\NotBlank(message: 'The gender is required.')]
     #[Assert\Length(min: 1, max: 80, minMessage: 'The gender must be at least {{ limit }} characters', maxMessage: 'The gender cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
-    #[ORM\Column(length: 80)]
+    #[ORM\Column(type: Types::STRING, length: 80)]
     #[OA\Property(description: 'The gender of the customer.')]
     private ?string $gender = null;
 
@@ -77,21 +77,21 @@ class Customer
     #[Assert\NotBlank(message: 'The phone number is required.')]
     #[Assert\Length(min: 1, max: 20, minMessage: 'The phone number must be at least {{ limit }} characters', maxMessage: 'The phone number cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(type: Types::STRING, length: 20)]
     #[OA\Property(description: 'The phone number of the customer.')]
     private ?string $phoneNumber = null;
 
     #[Assert\NotBlank(message: 'The address is required.')]
     #[Assert\Length(min: 1, max: 255, minMessage: 'The address must be at least {{ limit }} characters', maxMessage: 'The address cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[OA\Property(description: 'The address of the customer.')]
     private ?string $address = null;
 
     #[Assert\NotBlank(message: 'The company is required.')]
     #[Assert\Length(min: 1, max: 50, minMessage: 'The company must be at least {{ limit }} characters', maxMessage: 'The company cannot be more than {{ limit }} characters')]
     #[Groups(['getCustomers'])]
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[OA\Property(description: 'The company of the customer.')]
     private ?string $company = null;
 
