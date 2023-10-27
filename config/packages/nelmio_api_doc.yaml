@@ -1,8 +1,10 @@
 nelmio_api_doc:
     documentation:
         servers:
-            - url: http://192.168.33.10:8000
-              description: API BileMo
+            - url: https://127.0.0.1:8000
+              description: API BileMo secure
+            - url: http://127.0.0.1:8000
+              description: API BileMo not secure
         info:
             title: BileMo
             description: API service
