@@ -39,16 +39,19 @@ class DeviceController extends AbstractController
         Request                $request,
         TagAwareCacheInterface $cache): JsonResponse
     {
+//        I get the url parameters
         $page = $request->get('page', 1);
         $limit = $request->get('limit', 3);
+//        I name the cache
         $idCache = 'getAllDevices-' . $page . '-' . $limit;
-
-        $deviceList = $cache->get($idCache, function (ItemInterface $item) use ($deviceRepository, $page, $limit){
+//        I get a list
+        $deviceList = $cache->get($idCache, function (ItemInterface $item) use ($deviceRepository, $page, $limit) {
             $item->tag('devicesCache');
             return $deviceRepository->findAllWithPagination($page, $limit);
         });
-
+//        I serialize the list
         $jsonDeviceList = $serializer->serialize($deviceList, 'json');
+//        I return a response
         return new JsonResponse($jsonDeviceList, Response::HTTP_OK, [], true);
     }
 
@@ -61,7 +64,9 @@ class DeviceController extends AbstractController
     #[OA\Tag(name: 'Devices')]
     public function getDetailDevice(Device $device, SerializerInterface $serializer): JsonResponse
     {
+//        I serialize the request
         $jsonDevice = $serializer->serialize($device, 'json');
+//        I return a response
         return new JsonResponse($jsonDevice, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
@@ -76,9 +81,13 @@ class DeviceController extends AbstractController
     #[OA\Tag(name: 'Devices')]
     public function deleteDevice(Device $device, EntityManagerInterface $manager, TagAwareCacheInterface $cache): JsonResponse
     {
+//        I delete
         $manager->remove($device);
+//        I am recording
         $manager->flush();
+//        I delete the cache
         $cache->invalidateTags(['devicesCache']);
+//        I return a response
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
@@ -99,18 +108,25 @@ class DeviceController extends AbstractController
         ErrorValidate          $errorValidate,
         TagAwareCacheInterface $cache): JsonResponse
     {
+//        I get the body and deserialize it
         /** @var Device $device */
         $device = $serializer->deserialize($request->getContent(), Device::class, 'json');
+//        I create a creation date
         $device->setCreatedAt(new \DateTime());
-
+//        I check that there are no errors
         $errorValidate->check($device);
         $errorValidate->checkVersionAndBuildNumber($device);
-
+//        I enter it into the database
         $manager->persist($device);
+//        I record
         $manager->flush();
+//        I delete the cache
         $cache->invalidateTags(['devicesCache']);
+//        I serialize the request
         $jsonDevice = $serializer->serialize($device, 'json');
+//        I create an url of the created object
         $location = $urlGenerator->generate('detailDevices', ['id' => $device->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+//        I return a response
         return new JsonResponse($jsonDevice, Response::HTTP_CREATED, ['location' => $location], true);
     }
 
@@ -131,12 +147,13 @@ class DeviceController extends AbstractController
         ErrorValidate          $errorValidate,
         TagAwareCacheInterface $cache): JsonResponse
     {
+//        I deserialize the body which contains the updater object
         /** @var Device $updateDevice */
         $updateDevice = $serializer->deserialize($request->getContent(), Device::class, 'json');
-
+//        I check that there are no errors
         $errorValidate->check($updateDevice);
         $errorValidate->checkVersionAndBuildNumber($updateDevice);
-
+//        I set the new values
         $currentDevice
             ->setModelName($updateDevice->getModelName())
             ->setManufacturer($updateDevice->getManufacturer())
@@ -146,13 +163,15 @@ class DeviceController extends AbstractController
             ->setBuildNumber($updateDevice->getBuildNumber())
             ->setCreatedAt($updateDevice->getCreatedAt())
             ->setUpdatedAt(new \DateTime());
-
+//        I enter it into the database
         $manager->persist($updateDevice);
+//        I record
         $manager->flush();
+//        I delete the cache
         $cache->invalidateTags(['devicesCache']);
+//        I return a response
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
-
 
 
 }

@@ -43,21 +43,28 @@ class CustomerController extends AbstractController
         Request                $request,
         TagAwareCacheInterface $cache,
         VersioningService      $versioningService
-    ): JsonResponse {
+    ): JsonResponse
+    {
+//        I retrieve the user who uses the API
         /** @var User $user */
         $user = $this->getUser();
+//        I get the url parameters
         $page = $request->get('page', 1);
         $limit = $request->get('limit', 3);
+//        I name the cache
         $idCache = 'getAllCustomers-' . $user->getId() . '-' . $page . '-' . $limit;
-
+//        I get a list
         $customerList = $cache->get($idCache, function (ItemInterface $item) use ($customerRepository, $page, $limit, $user) {
             $item->tag('customersCache');
             return $customerRepository->findAllWithPagination($page, $limit, $user);
         });
-
+//        I get a version
         $version = $versioningService->getVersion();
+//        I get serialize context (group and version)
         $context = SerializationContext::create()->setGroups(['getCustomers'])->setVersion($version);
+//        I serialize the list
         $jsonCustomerList = $serializer->serialize($customerList, 'json', $context);
+//        I return a response
         return new JsonResponse($jsonCustomerList, Response::HTTP_OK, [], true);
     }
 
@@ -70,16 +77,20 @@ class CustomerController extends AbstractController
     #[OA\Tag(name: 'Customers')]
     public function getDetailCustomer(Customer $customer, SerializerInterface $serializer, VersioningService $versioningService): JsonResponse
     {
+//        I retrieve the user who uses the API
         /** @var User $user */
         $user = $this->getUser();
-
+//        I check that he is not requesting a client who is not his
         if ($customer->getUser()->getId() !== $user->getId()) {
             throw new HttpException(403, 'You dont have a User with this ID');
         }
-
+//        I get a version
         $version = $versioningService->getVersion();
+//        I get serialize context (group and version)
         $context = SerializationContext::create()->setGroups(['getCustomers'])->setVersion($version);
+//        I serialize the request
         $jsonDetailCustomer = $serializer->serialize($customer, 'json', $context);
+//        I return a response
         return new JsonResponse($jsonDetailCustomer, Response::HTTP_OK, [], true);
     }
 
@@ -94,16 +105,20 @@ class CustomerController extends AbstractController
     #[OA\Tag(name: 'Customers')]
     public function deleteCustomer(Customer $customer, EntityManagerInterface $manager, TagAwareCacheInterface $cache): JsonResponse
     {
+//        I retrieve the user who uses the API
         /** @var User $user */
         $user = $this->getUser();
-
+//        I check that he is not requesting a client who is not his
         if ($customer->getUser()->getId() !== $user->getId()) {
             throw new HttpException(403, 'You dont have a User with this ID');
         }
-
+//        I delete
         $manager->remove($customer);
+//        I am recording
         $manager->flush();
+//        I delete the cache
         $cache->invalidateTags(['customersCache']);
+//        I return a response
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
@@ -124,19 +139,32 @@ class CustomerController extends AbstractController
         ErrorValidate          $errorValidate,
         TagAwareCacheInterface $cache,
         VersioningService      $versioningService
-    ): JsonResponse {
+    ): JsonResponse
+    {
+//        I get the body and deserialize it
         /** @var Customer $customer */
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
+//        I credit him with the customer relationship he created.
         $customer->setUser($this->getUser());
+//        I create a creation date
         $customer->setCreatedAt(new \DateTime());
+//        I check that there are no errors
         $errorValidate->check($customer);
+//        I enter it into the database
         $manager->persist($customer);
+//        I record
         $manager->flush();
+//        I delete the cache
         $cache->invalidateTags(['customersCache']);
+//        I get a version
         $version = $versioningService->getVersion();
+//        I get serialize context (group and version)
         $context = SerializationContext::create()->setGroups(['getCustomers'])->setVersion($version);
+//        I serialize the request
         $jsonCustomer = $serializer->serialize($customer, 'json', $context);
+//        I create an url of the created object
         $location = $urlGenerator->generate('detailCustomers', ['id' => $customer->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+//        I return a response
         return new JsonResponse($jsonCustomer, Response::HTTP_CREATED, ['location' => $location], true);
     }
 
@@ -156,19 +184,21 @@ class CustomerController extends AbstractController
         Customer               $currentCustomer,
         ErrorValidate          $errorValidate,
         TagAwareCacheInterface $cache
-    ): JsonResponse {
+    ): JsonResponse
+    {
+//        I retrieve the user who uses the API
         /** @var User $user */
         $user = $this->getUser();
-
+//        I check that he is not requesting a client who is not his
         if ($currentCustomer->getUser()->getId() !== $user->getId()) {
             throw new HttpException(403, 'You dont have a User with this ID');
         }
-
+//        I deserialize the body which contains the updater object
         /** @var Customer $updateCustomer */
         $updateCustomer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
+//        I check that there are no errors
         $errorValidate->check($updateCustomer);
-
-
+//        I set the new values
         $currentCustomer
             ->setFirstname($updateCustomer->getFirstname())
             ->setLastname($updateCustomer->getLastname())
@@ -181,10 +211,13 @@ class CustomerController extends AbstractController
             ->setComment($updateCustomer->getComment())
             ->setCreatedAt($updateCustomer->getCreatedAt())
             ->setUpdatedAt(new \DateTime());
-
+//        I enter it into the database
         $manager->persist($updateCustomer);
+//        I record
         $manager->flush();
+//        I delete the cache
         $cache->invalidateTags(['customersCache']);
+//        I return a response
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
