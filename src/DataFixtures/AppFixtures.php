@@ -51,7 +51,8 @@ class AppFixtures extends Fixture
                 ->setModelName($faker->deviceModelName())
                 ->setPlatform($faker->devicePlatform())
                 ->setSerialNumber($faker->deviceSerialNumber())
-                ->setVersion($faker->deviceVersion());
+                ->setVersion($faker->deviceVersion())
+                ->setCreatedAt(new \DateTime());
             $manager->persist($device);
         }
 
@@ -71,7 +72,8 @@ class AppFixtures extends Fixture
                 ->setDateOfBirth($faker->dateTime())
                 ->setUser($faker->randomElement([$admin, $user]))
                 ->setCompany($faker->company())
-                ->setComment($faker->text());
+                ->setComment($faker->text())
+                ->setCreatedAt(new \DateTime());
             $manager->persist($customer);
         }
 
