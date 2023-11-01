@@ -175,7 +175,7 @@ class CustomerController extends AbstractController
      */
     #[Route('/{id}', name: 'updateCustomers', methods: ['PUT'])]
     #[IsGranted('ROLE_ADMIN', message: 'You do not have sufficient rights to modify a customer')]
-    #[OA\Response(response: 204, description: 'Your customer has been updated')]
+    #[OA\Response(response: 200, description: 'Your customer has been updated')]
     #[OA\Tag(name: 'Customers')]
     public function updateCustomer(
         SerializerInterface    $serializer,
@@ -183,7 +183,9 @@ class CustomerController extends AbstractController
         EntityManagerInterface $manager,
         Customer               $currentCustomer,
         ErrorValidate          $errorValidate,
-        TagAwareCacheInterface $cache
+        TagAwareCacheInterface $cache,
+        VersioningService      $versioningService,
+        UrlGeneratorInterface  $urlGenerator
     ): JsonResponse
     {
 //        I retrieve the user who uses the API
@@ -217,8 +219,16 @@ class CustomerController extends AbstractController
         $manager->flush();
 //        I delete the cache
         $cache->invalidateTags(['customersCache']);
+//        I get a version
+        $version = $versioningService->getVersion();
+//        I get serialize context (group and version)
+        $context = SerializationContext::create()->setGroups(['getCustomers'])->setVersion($version);
+//        I serialize the request
+        $jsonCustomer = $serializer->serialize($currentCustomer, 'json', $context);
+//        I create an url of the created object
+        $location = $urlGenerator->generate('detailCustomers', ['id' => $currentCustomer->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
 //        I return a response
-        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        return new JsonResponse($jsonCustomer, Response::HTTP_OK, ['location' => $location], true);
     }
 
 

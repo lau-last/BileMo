@@ -137,7 +137,7 @@ class DeviceController extends AbstractController
      */
     #[Route('/{id}', name: 'updateDevices', methods: ['PUT'])]
     #[IsGranted('ROLE_ADMIN', message: 'You do not have sufficient rights to modify a device')]
-    #[OA\Response(response: 204, description: 'Your device has been updated')]
+    #[OA\Response(response: 200, description: 'Your device has been updated')]
     #[OA\Tag(name: 'Devices')]
     public function updateDevice(
         SerializerInterface    $serializer,
@@ -145,7 +145,8 @@ class DeviceController extends AbstractController
         EntityManagerInterface $manager,
         Device                 $currentDevice,
         ErrorValidate          $errorValidate,
-        TagAwareCacheInterface $cache): JsonResponse
+        TagAwareCacheInterface $cache,
+        UrlGeneratorInterface  $urlGenerator): JsonResponse
     {
 //        I deserialize the body which contains the updater object
         /** @var Device $updateDevice */
@@ -169,8 +170,12 @@ class DeviceController extends AbstractController
         $manager->flush();
 //        I delete the cache
         $cache->invalidateTags(['devicesCache']);
+//        I serialize the request
+        $jsonDevice = $serializer->serialize($currentDevice, 'json');
+//        I create an url of the created object
+        $location = $urlGenerator->generate('detailDevices', ['id' => $currentDevice->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
 //        I return a response
-        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        return new JsonResponse($jsonDevice, Response::HTTP_OK, ['location' => $location], true);
     }
 
 
